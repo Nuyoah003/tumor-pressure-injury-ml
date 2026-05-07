@@ -55,3 +55,6 @@ Thumbs.db
 /mnt/
 outputs/
 logs/
+
+# Temporary garbage files from shell escaping
+reports*

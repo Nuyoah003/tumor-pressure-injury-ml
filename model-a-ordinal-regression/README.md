@@ -13,7 +13,9 @@ model-a-ordinal-regression/
 │   ├── smote_optimization.py         # [策略2] SMOTE 过采样优化实验
 │   ├── 03_ensemble_cost_sensitive.py # [策略6] 代价敏感序数集成模型（实验对比脚本）
 │   ├── 04_best_model_ensemble.py     # [生产] 综合最优模型：Top3软投票集成 + 阈值优化
-│   └── 05_high_risk_model.py         # [生产] 高风险预警模型：XGBoost + 序数代价权重
+│   ├── 05_high_risk_model.py         # [生产] 高风险预警模型：XGBoost + 序数代价权重
+│   ├── predict_ensemble.py           # [推理] 加载综合最优模型，对新数据预测
+│   └── predict_high_risk.py          # [推理] 加载高风险预警模型，对新数据预测
 ├── reports/                          # 报告与图表
 │   ├── 13_数据清洗质量确认报告.md
 │   ├── 14_模型开发技术报告.md
@@ -91,11 +93,47 @@ model-a-ordinal-regression/
 
 - 单模型，结构简单
 - 使用纯序数代价权重（不混逆频率），强化对远距离误判的惩罚
-- 不调阈值，直接argmax预测
+- 验证集搜索最优概率偏移阈值
 
 **性能：** Kappa=0.2477, 高风险Recall=0.4972, AUC(macro)=0.9075
 
 **适用场景：** 临床筛查阶段，宁可误报也不漏掉高风险患者。
+
+### `predict_ensemble.py` — 推理：综合最优模型
+
+加载 `04_best_model_ensemble.py` 训练保存的集成模型，对新数据进行预测。
+
+**用法：**
+
+```bash
+# 命令行（传入 Excel 或 CSV 文件）
+python predict_ensemble.py 新患者数据.xlsx
+
+# 代码内调用
+from predict_ensemble import predict
+result = predict(df)                    # 返回预测等级 Series
+result, proba = predict(df, return_proba=True)  # 同时返回概率矩阵
+```
+
+**输出：** 预测等级（无风险/低风险/中风险/高风险）+ 各类别概率，结果保存为 CSV。
+
+### `predict_high_risk.py` — 推理：高风险预警模型
+
+加载 `05_high_risk_model.py` 训练保存的模型，对新数据进行预测。
+
+**用法：**
+
+```bash
+# 命令行
+python predict_high_risk.py 新患者数据.xlsx
+
+# 代码内调用
+from predict_high_risk import predict
+result = predict(df)                    # 返回预测等级 Series
+result, proba = predict(df, return_proba=True)  # 同时返回概率矩阵
+```
+
+**输出：** 预测等级 + 各类别概率，高风险患者单独列出，结果保存为 CSV。
 
 ## 当前进度
 
@@ -136,6 +174,10 @@ python 04_best_model_ensemble.py
 
 # 生产部署：高风险预警模型
 python 05_high_risk_model.py
+
+# 推理：使用训练好的模型对新数据预测
+python predict_ensemble.py 新患者数据.xlsx
+python predict_high_risk.py 新患者数据.xlsx
 ```
 
 > **数据文件**：`20260511更正后数据.xlsx`（03/04/05）或 `清洗后数据.xlsx`（01/02）需放置在 `src/` 目录下。数据文件因体积较大不纳入版本控制。

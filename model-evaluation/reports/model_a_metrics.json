@@ -1,0 +1,73 @@
+{
+  "model_name": "Model A (Logistic)",
+  "n_samples": 20101,
+  "confusion_matrix": [
+    [
+      18120,
+      1009,
+      71,
+      55
+    ],
+    [
+      292,
+      262,
+      36,
+      31
+    ],
+    [
+      39,
+      31,
+      21,
+      16
+    ],
+    [
+      33,
+      49,
+      18,
+      18
+    ]
+  ],
+  "accuracy": 0.9164,
+  "kappa": 0.2856,
+  "macro_f1": 0.3858,
+  "weighted_f1": 0.9298,
+  "per_class": {
+    "0": {
+      "label": "无风险(0)",
+      "precision": 0.9803,
+      "recall": 0.9411,
+      "f1": 0.9603,
+      "support": 19255
+    },
+    "1": {
+      "label": "低风险(1)",
+      "precision": 0.1939,
+      "recall": 0.4219,
+      "f1": 0.2657,
+      "support": 621
+    },
+    "2": {
+      "label": "中风险(2)",
+      "precision": 0.1438,
+      "recall": 0.1963,
+      "f1": 0.166,
+      "support": 107
+    },
+    "3": {
+      "label": "高风险(3)",
+      "precision": 0.15,
+      "recall": 0.1525,
+      "f1": 0.1513,
+      "support": 118
+    }
+  },
+  "g_mean": 0.3302,
+  "auc_macro": 0.8981,
+  "auc_weighted": 0.9072,
+  "per_class_auc": {
+    "0": 0.9089,
+    "1": 0.8529,
+    "2": 0.8944,
+    "3": 0.9364
+  }
+}
